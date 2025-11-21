@@ -1,17 +1,28 @@
 package se.yrgo.libraryapp.validators;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 public class UsernameTest {
-    @Test
-    void correctUsername() {
-        assertTrue(Username.validate("bosse"));
+    @ParameterizedTest
+    @ValueSource(strings = {"bosse","lena_larsson@123", "arvid.bengtsson456"})
+    void correctUsername(String name) {
+        assertThat(Username.validate(name)).isTrue();
     }
 
-    @Test
-    void incorrectUsername() {
-        assertFalse(Username.validate("name with space"));
+    @ParameterizedTest
+    @ValueSource(strings = {"bosse bred sladd", "harald$#nilsson", "linus22 storm!?*" })
+    void incorrectUsername(String name) {
+        assertThat(Username.validate(name)).isFalse();
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    void InvalidEmptyUsername(String name) {
+        assertThat(Username.validate(name)).isFalse();
     }
 }
